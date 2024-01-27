@@ -1,0 +1,98 @@
+#include<stdio.h>
+#pragma warning(disable:4996)
+#define max 500000
+typedef struct {
+    int a[max];
+    int top;
+}Stack;//抽象数据类型
+void init(Stack* s) {
+    s->top = -1;
+}//建立一个栈
+void push(Stack* s, int value) {
+    s->a[++(s->top)] = value;
+}//入栈
+int pop(Stack* s) {
+    return s->a[(s->top)--];
+}//删除栈顶元素（最后一个）
+int gettop(Stack* s)
+{
+    return s->a[s->top];
+}//返回栈顶元素
+int getlength(Stack* s)
+{
+    return s->top + 1;
+}//返回有多少个元素
+int get_nth_element(Stack* s, int n)
+{
+    return s->a[(s->top - n)];
+}//返回第n个元素
+int get_bottom(Stack* s)
+{
+    return s->a[0];
+}
+int main() {
+    Stack s;
+    init(&s);
+    int n;
+    long long int sum = 0;
+    int j, k = 0;
+    int b[500000];
+    int topnum;//栈顶元素
+    int length, length1;//栈的长度
+    int c;//特殊情况
+    int a = 0;
+    scanf("%d", &n);
+    for (j = 0; j < n; j++)
+        scanf("%d", &b[j]);
+    push(&s, b[0]);
+    sum += n - 1;
+    for (int i = 1; i < n; i++) {
+        if (b[i] >= (topnum = gettop(&s)))
+        {
+            length = getlength(&s);
+            a = 1;
+            for (j = 0; j < length; j++)
+            {
+                if (b[i] > gettop(&s))
+                {
+                    pop(&s);
+                    sum += 1;
+                    if (getlength(&s) == 0)
+                        sum -= 1;
+                }
+                else if (b[i] == gettop(&s))
+                {
+
+                    if (b[i] == get_bottom(&s))
+                    {
+                        sum += (getlength(&s) - 1);
+                        break;
+                    }
+                    else
+                    {
+                        pop(&s);
+                        sum += 1;
+                        a += 1;
+                        if ( getlength(&s) == 0)
+                            sum -= 1;
+                    }
+                }
+                else
+                    break;
+            }
+            if (a == 0 || a == 1)
+                push(&s, b[i]);
+            else
+            {
+                for (k = 0; k < a; k++)
+                    push(&s, b[i]);
+            }
+        }//如果下一个数比栈顶大//
+        else//(b[i] < (topnum = gettop(&s)))
+        {
+            push(&s, b[i]);
+        }
+    }
+    printf("%lld", sum);
+    return 0;
+}
